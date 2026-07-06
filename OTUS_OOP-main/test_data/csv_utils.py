@@ -15,7 +15,7 @@ def read_csv(filename: str):
 if __name__ == "__main__":
     data = read_csv("books.csv")
     print(f"Loaded {len(data)} users from CSV")
-    for user in data:
-        print("\nRead user information:\n")
-        for key, value in user.items():
+    for book in data:
+        print("\nRead book information:\n")
+        for key, value in book.items():
             print (key, value)

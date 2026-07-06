@@ -22,4 +22,4 @@ if __name__ == "__main__":
     for user in data:
         print("\nRead user information:\n")
         for key, value in user.items():
-            print (key, value)
+            print(key, value)
