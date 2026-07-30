@@ -2,9 +2,9 @@ import pytest
 
 
 def pytest_addoption(parser):
-    parser.addoption("--url", action="store", default="google.com")
+    parser.addoption("--url", action="store", default="https://google.com")
 
-    parser.addoption("--status_code", action="store", default="404")
+    parser.addoption("--status_code", action="store", type=int, default="404")
 
 
 @pytest.fixture(scope="session")

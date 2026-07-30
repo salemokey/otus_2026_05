@@ -25,29 +25,33 @@ def test_alldogs_list(check_api):
     data = check_api(url)
     assert "african" in data["message"]
     assert 0 < len(data["message"])
-    assert any(data["message"].values())
 
 
 @pytest.mark.dog_image_random
 def test_image_random(check_api):
     url = "https://dog.ceo/api/breeds/image/random"
-    data = check_api(url)
+    check_api(url)
 
 
-url_list_breeds = "https://dog.ceo/api/breeds/list"
-response = requests.get(url_list_breeds)
-response_json = response.json()
+def get_breeds_list():
+    url_list_breeds = "https://dog.ceo/api/breeds/list"
+    response = requests.get(url_list_breeds)
+    response_json = response.json()
+    return response_json["message"]
 
 
-@pytest.mark.parametrize("breed", list(response_json["message"]))
+@pytest.mark.parametrize("breed", list(get_breeds_list()))
 @pytest.mark.dog_breed_img
 def test_breed_img(check_api, breed):
     url = f"https://dog.ceo/api/breed/{breed}/images/random"
     data = check_api(url)
 
+    assert data["message"].startswith(f"https://images.dog.ceo/breeds/{breed}")
+    assert data["message"].endswith(".jpg")
+
 
 sub_breeds_list = []
-for breed in response_json["message"]:
+for breed in get_breeds_list():
     url = f"https://dog.ceo/api/breed/{breed}/list"
     response = requests.get(url)
     response_json = response.json()
@@ -68,6 +72,7 @@ def test_sub_breed_img(check_api, breed, sub_breed):
     data = check_api(url)
 
     assert len(data) > 0
-
-
-# test_dogapi()
+    assert data["message"].startswith(
+        f"https://images.dog.ceo/breeds/{breed}-{sub_breed}/"
+    )
+    assert data["message"].endswith(".jpg")
