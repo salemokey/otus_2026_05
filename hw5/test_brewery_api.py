@@ -28,9 +28,6 @@ def test_api():
             assert isinstance(data["address_3"], (str, type(None)))
             assert isinstance(data["city"], str)
             assert isinstance(data["state_province"], (str, type(None)))
-
-        # assert data["status"] == "success"
-        # assert isinstance(data, dict)
         return data
 
     return _make_request

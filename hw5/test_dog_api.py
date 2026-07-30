@@ -10,7 +10,6 @@ def check_api():
         resp = requests.get(url)
         data = resp.json()
 
-        # assert resp.status_code == 200
         assert data["status"] == "success"
         assert isinstance(data, dict)
         return data
