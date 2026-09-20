@@ -1,5 +1,6 @@
 from selenium.webdriver.support import expected_conditions as EC
 
+from pom.components.header import HeaderComponent
 from pom.locators.cart_page_locators import CartPageLocators
 from pom.page.abs_base_page import AbsBasePage
 
@@ -7,6 +8,7 @@ from pom.page.abs_base_page import AbsBasePage
 class CartPage(AbsBasePage):
     def __init__(self, browser, base_url):
         super().__init__(browser, base_url, path="")
+        self.header = HeaderComponent(browser, base_url, "")
 
     def added_product_is_displayed(self):
         self._is_element_visible(CartPageLocators.ADDED_PRODUCT)
@@ -60,4 +62,4 @@ class CartPage(AbsBasePage):
         return self._is_element_visible(CartPageLocators.NO_ITEMS_TITLE)
 
     def change_currency_cart_page(self):
-        return super().change_currency_to_usd()
+        return self.header.change_currency_to_usd()

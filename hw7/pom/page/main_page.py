@@ -1,5 +1,6 @@
 from selenium.webdriver.support import expected_conditions as EC
 
+from pom.components.header import HeaderComponent
 from pom.locators.main_page_locators import MainPageLocators
 from pom.page.abs_base_page import AbsBasePage
 
@@ -7,6 +8,7 @@ from pom.page.abs_base_page import AbsBasePage
 class MainPage(AbsBasePage):
     def __init__(self, browser, base_url):
         super().__init__(browser, base_url, "/")
+        self.header = HeaderComponent(browser, base_url, "")
 
     def displayed_title(self):
         return self._is_element_visible(MainPageLocators.HEADER_ELEMENT)
@@ -42,7 +44,7 @@ class MainPage(AbsBasePage):
         return self._is_element_visible(MainPageLocators.DROPDOWN_CURRENCY)
 
     def change_currency_to_usd(self):
-        return super().change_currency_to_usd()
+        return self.header.change_currency_to_usd()
 
     def get_updated_price(self) -> str:
         element = self.wait.until(
