@@ -1,52 +1,30 @@
-from selenium.webdriver.support import expected_conditions as EC
-
 from pom.locators.product_page_locators import ProductPageLocators
 from pom.page.abs_base_page import AbsBasePage
-from pom.page.main_page import MainPage
 
 
 class ProductPage(AbsBasePage):
     def __init__(self, browser, base_url):
         super().__init__(browser, base_url, path="")
 
-    def open(self):
-        main_page = MainPage(self._driver, self._base_url)
-        main_page.open()
-        product_title_from_main = main_page.click_on_product()
-        return product_title_from_main
-
-    def displayed_product_title(self):
-        element = self.wait.until(
-            EC.visibility_of_element_located(ProductPageLocators.PRODUCT_NAME)
-        )
-        return element
+    def displayed_product_name(self):
+        return self._is_element_visible(ProductPageLocators.PRODUCT_NAME)
 
     def displayed_add_to_cart_btn(self):
-        element = self.wait.until(
-            EC.visibility_of_element_located(ProductPageLocators.ADD_TO_CART_BUTTON)
-        )
-        return element
+        return self._is_element_visible(ProductPageLocators.ADD_TO_CART_BUTTON)
 
     def displayed_description(self):
-        element = self.wait.until(
-            EC.visibility_of_element_located(ProductPageLocators.PRODUCT_DESCRIPTION)
-        )
-        return element
+        return self._is_element_visible(ProductPageLocators.PRODUCT_DESCRIPTION)
 
     def displayed_comments(self):
-        element = self.wait.until(
-            EC.visibility_of_element_located(ProductPageLocators.COMMENTS_LIST)
-        )
-        return element
+        return self._is_element_visible(ProductPageLocators.COMMENTS_LIST)
 
     def displayed_wish_btn(self):
-        element = self.wait.until(
-            EC.visibility_of_element_located(ProductPageLocators.WISH_BTN)
-        )
-        return element
+        return self._is_element_visible(ProductPageLocators.WISH_BTN)
 
     def open_cart_from_modal(self):
-        element = self.wait.until(
-            EC.element_to_be_clickable(ProductPageLocators.CONTINUE_CART_BTN)
-        )
-        element.click()
+        from pom.page.cart_page import CartPage
+
+        self._click(ProductPageLocators.ADD_TO_CART_BUTTON)
+        self._click(ProductPageLocators.CONTINUE_CART_BTN)
+
+        return CartPage(self._driver, self._base_url)

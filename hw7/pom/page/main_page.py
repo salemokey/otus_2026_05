@@ -9,84 +9,43 @@ class MainPage(AbsBasePage):
         super().__init__(browser, base_url, "/")
 
     def displayed_title(self):
-        element = self.wait.until(
-            EC.visibility_of_element_located((MainPageLocators.HEADER_ELEMENT))
-        )
-        return element
+        return self._is_element_visible(MainPageLocators.HEADER_ELEMENT)
 
     def displayed_carousel(self):
-        element = self.wait.until(
-            EC.visibility_of_element_located((MainPageLocators.CAROUSEL_ELEMENT))
-        )
-        return element
+        return self._is_element_visible(MainPageLocators.CAROUSEL_ELEMENT)
 
     def displayed_user_info(self):
-        element = self.wait.until(
-            EC.visibility_of_element_located((MainPageLocators.USER_INFO_ELEMENT))
-        )
-        return element
+        return self._is_element_visible(MainPageLocators.USER_INFO_ELEMENT)
 
     def displayed_popular_title(self):
-        element = self.wait.until(
-            EC.visibility_of_element_located((MainPageLocators.POPULAR_TITLE))
-        )
-        return element
+        return self._is_element_visible(MainPageLocators.POPULAR_TITLE)
 
     def displayed_products(self):
-        element = self.wait.until(
-            EC.visibility_of_element_located((MainPageLocators.PRODUCTS_ROW))
-        )
-        return element
+        return self._is_element_visible(MainPageLocators.PRODUCTS_ROW)
 
     def click_on_product(self):
-        product_element = self.wait.until(
-            EC.element_to_be_clickable(MainPageLocators.PRODUCT_TITLE)
-        )
-        product_element_title = product_element.text.upper()
-        product_element.click()
-        return product_element_title
+        from pom.page.product_page import ProductPage
+
+        self._click(MainPageLocators.PRODUCT_TITLE)
+        return ProductPage(self._driver, self._base_url)
 
     def click_on_login(self):
-        login_btn = self.wait.until(
-            EC.element_to_be_clickable(MainPageLocators.LOGIN_BTN)
-        )
-        login_btn.click()
-        return login_btn
+        from pom.page.login_page import LoginPage
+
+        self._click(MainPageLocators.LOGIN_BTN)
+        return LoginPage(self._driver, self._base_url)
 
     def displayed_currency(self):
-        element = self.wait.until(
-            EC.visibility_of_element_located((MainPageLocators.CURRENT_PRICE))
-        )
-        return element
+        return self._is_element_visible(MainPageLocators.CURRENT_PRICE)
 
     def dropdown_currency(self):
+        return self._is_element_visible(MainPageLocators.DROPDOWN_CURRENCY)
+
+    def change_currency_to_usd(self):
+        return super().change_currency_to_usd()
+
+    def get_updated_price(self) -> str:
         element = self.wait.until(
-            EC.visibility_of_element_located((MainPageLocators.DROPDOWN_CURRENCY))
+            EC.visibility_of_element_located((MainPageLocators.UPDATED_PRICE))
         )
-        return element
-
-    def dropdown_option(self, currency):
-        if "€" in currency:
-            element = self.wait.until(
-                EC.element_to_be_clickable((MainPageLocators.DROPDOWN_OPTION))
-            )
-            return element
-        else:
-            return None
-
-    def wait_new_currency(self):
-        self.wait.until(
-            EC.text_to_be_present_in_element(
-                MainPageLocators.DROPDOWN_OPTION_DOLLARS["locator"],
-                MainPageLocators.DROPDOWN_OPTION_DOLLARS["text"],
-            )
-        )
-
-    def updated_price(self):
-        element = self.wait.until(
-            EC.visibility_of_element_located(MainPageLocators.UPDATED_PRICE)
-        ).text
-        return element
-
-    def wait_currency_url(self):
-        self.wait.until(EC.url_contains("id_currency=2"))
+        return element.text

@@ -42,3 +42,16 @@ class AbsBasePage(ABC):
         self.wait.until(EC.url_contains("id_currency=2"))
 
         return self
+
+    def _is_element_visible(self, locator) -> bool:
+        try:
+            self.wait.until(EC.visibility_of_element_located(locator))
+            return True
+        except Exception:
+            return False
+
+    def _click(self, locator):
+        self.wait.until(EC.element_to_be_clickable(locator)).click()
+
+    def _input_text(self, text, locator):
+        self.wait.until(EC.visibility_of_element_located(locator)).send_keys(text)
