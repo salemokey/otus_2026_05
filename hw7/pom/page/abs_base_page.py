@@ -17,15 +17,24 @@ class AbsBasePage(ABC):
     def open(self):
         self._driver.get(self._base_url + self._path)
 
+    def wait_visible(self, locator):
+        return self.wait.until(EC.visibility_of_element_located(locator))
+
+    def wait_visible_all(self, locator):
+        return self.wait.until(EC.visibility_of_all_elements_located(locator))
+
+    def wait_clickable(self, locator):
+        return self.wait.until(EC.element_to_be_clickable(locator))
+
     def _is_element_visible(self, locator) -> bool:
         try:
-            self.wait.until(EC.visibility_of_element_located(locator))
+            self.wait_visible(locator)
             return True
         except Exception:
             return False
 
     def _click(self, locator):
-        self.wait.until(EC.element_to_be_clickable(locator)).click()
+        self.wait_clickable(locator).click()
 
     def _input_text(self, text, locator):
-        self.wait.until(EC.visibility_of_element_located(locator)).send_keys(text)
+        self.wait_visible(locator).send_keys(text)

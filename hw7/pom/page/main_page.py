@@ -1,5 +1,3 @@
-from selenium.webdriver.support import expected_conditions as EC
-
 from pom.components.header import HeaderComponent
 from pom.locators.main_page_locators import MainPageLocators
 from pom.page.abs_base_page import AbsBasePage
@@ -47,7 +45,5 @@ class MainPage(AbsBasePage):
         return self.header.change_currency_to_usd()
 
     def get_updated_price(self) -> str:
-        element = self.wait.until(
-            EC.visibility_of_element_located((MainPageLocators.UPDATED_PRICE))
-        )
+        element = self.wait_visible(MainPageLocators.UPDATED_PRICE)
         return element.text

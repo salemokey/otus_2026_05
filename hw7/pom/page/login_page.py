@@ -1,5 +1,3 @@
-from selenium.webdriver.support import expected_conditions as EC
-
 from pom.locators.login_page_locators import LoginPageLocators
 from pom.page.abs_base_page import AbsBasePage
 
@@ -12,9 +10,7 @@ class LoginPage(AbsBasePage):
         return self._is_element_visible(LoginPageLocators.REGISTRATION_BTN)
 
     def title_login_page(self) -> str:
-        return self.wait.until(
-            EC.visibility_of_element_located(LoginPageLocators.TITLE_LOGIN_PAGE)
-        ).text
+        return self.wait_visible(LoginPageLocators.TITLE_LOGIN_PAGE).text
 
     def click_registration(self):
         from pom.page.registration_page import RegistrationPage

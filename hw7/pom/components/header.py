@@ -6,17 +6,11 @@ from pom.page.abs_base_page import AbsBasePage
 
 class HeaderComponent(AbsBasePage):
     def change_currency_to_usd(self):
-        self.wait.until(
-            EC.visibility_of_element_located((MainPageLocators.CURRENT_PRICE))
-        )
+        self.wait_visible(MainPageLocators.CURRENT_PRICE)
 
-        self.wait.until(
-            EC.visibility_of_element_located((MainPageLocators.DROPDOWN_CURRENCY))
-        ).click()
+        self.wait_visible((MainPageLocators.DROPDOWN_CURRENCY)).click()
 
-        self.wait.until(
-            EC.element_to_be_clickable((MainPageLocators.DROPDOWN_OPTION))
-        ).click()
+        self._click(MainPageLocators.DROPDOWN_OPTION)
 
         self.wait.until(
             EC.text_to_be_present_in_element(

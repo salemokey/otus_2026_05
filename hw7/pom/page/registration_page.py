@@ -14,11 +14,7 @@ class RegistrationPage(AbsBasePage):
         )
 
     def title_registration_page(self) -> str:
-        element = self.wait.until(
-            EC.visibility_of_element_located(
-                RegistrationPageLocators.TITLE_RERISTRATION_PAGE
-            )
-        )
+        element = self.wait_visible(RegistrationPageLocators.TITLE_RERISTRATION_PAGE)
         return element.text
 
     def displayed_gender_btn(self):
