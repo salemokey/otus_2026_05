@@ -1,3 +1,5 @@
+import logging
+
 import pytest
 from pom.page.main_page import MainPage
 from pom.page.registration_page import RegistrationPage
@@ -15,6 +17,25 @@ def pytest_addoption(parser):
         "--browser", default="firefox", help="Выбор браузера: chrome, firefox"
     )
     parser.addoption("--url", default="http://localhost:8081")
+
+
+@pytest.fixture(scope="session", autouse=True)
+def init_logging():
+
+    log_level = logging.DEBUG
+
+    log_format = "%(asctime)s [%(levelname)s] (%(name)s) %(message)s"
+
+    logging.basicConfig(
+        level=log_level,
+        handlers=[logging.StreamHandler()],
+        format=log_format,
+        force=True,
+    )
+
+    logging.getLogger("urllib3").setLevel(logging.WARNING)
+    logging.getLogger("selenium").setLevel(logging.WARNING)
+    logging.getLogger("WDM").setLevel(logging.WARNING)
 
 
 @pytest.fixture

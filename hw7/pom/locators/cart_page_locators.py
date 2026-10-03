@@ -9,6 +9,6 @@ class CartPageLocators:
     SUBTOTAL = (By.CSS_SELECTOR, "#cart-subtotal-products .value")
     SHIPPING = (By.CSS_SELECTOR, "#cart-subtotal-shipping .value")
     TOTAL = (By.CSS_SELECTOR, ".cart-total .value")
-    REMOVE_BTN = (By.CSS_SELECTOR, "a.remove-from-cart")
+    REMOVE_BTN = (By.XPATH, "//a[@data-link-action='delete-from-cart']")
     CART_ITEMS = (By.CSS_SELECTOR, "li.cart-item")
     NO_ITEMS_TITLE = (By.CSS_SELECTOR, "span.no-items")
