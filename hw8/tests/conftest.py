@@ -3,6 +3,7 @@ import logging
 import pytest
 from pom.page.main_page import MainPage
 from pom.page.registration_page import RegistrationPage
+from selenium.webdriver.chrome.options import Options as ChromeOptions
 from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.firefox.service import Service as FirefoxService
 from selenium.webdriver.remote.webdriver import WebDriver
@@ -13,10 +14,14 @@ from selenium import webdriver
 
 
 def pytest_addoption(parser):
-    parser.addoption(
-        "--browser", default="firefox", help="Выбор браузера: chrome, firefox"
-    )
+    parser.addoption("--browser", default="firefox", help="Выбор браузера: chrome, firefox")
     parser.addoption("--url", default="http://localhost:8081")
+    parser.addoption(
+        "--headless",
+        action="store_true",
+        default=False,
+        help="Run browser in headless mode",
+    )
 
 
 @pytest.fixture(scope="session", autouse=True)
@@ -41,15 +46,24 @@ def init_logging():
 @pytest.fixture
 def browser(request) -> WebDriver:
     browser_name: str = request.config.getoption("--browser")
+    headless: bool = request.config.getoption("--headless", default=False)
 
     if browser_name == "chrome":
+        options = ChromeOptions()
+        if headless:
+            options.add_argument("--headless=new")
+            options.add_argument("--no-sandbox")
+            options.add_argument("--disable-dev-shm-usage")
+            options.add_argument("--disable-gpu")
+
         service: Service = Service(ChromeDriverManager().install())
         driver = webdriver.Chrome(service=service)
     elif browser_name == "firefox":
         service = FirefoxService(GeckoDriverManager().install())
         driver = webdriver.Firefox(service=service)
 
-    driver.maximize_window()
+    if not headless:
+        driver.maximize_window()
 
     yield driver
 
