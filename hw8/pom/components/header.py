@@ -1,0 +1,24 @@
+from selenium.webdriver.support import expected_conditions as EC
+
+from pom.locators.main_page_locators import MainPageLocators
+from pom.page.abs_base_page import AbsBasePage
+
+
+class HeaderComponent(AbsBasePage):
+    def change_currency_to_usd(self):
+        self.wait_visible(MainPageLocators.CURRENT_PRICE)
+
+        self.wait_visible((MainPageLocators.DROPDOWN_CURRENCY)).click()
+
+        self._click(MainPageLocators.DROPDOWN_OPTION)
+
+        self.wait.until(
+            EC.text_to_be_present_in_element(
+                MainPageLocators.DROPDOWN_OPTION_DOLLARS["locator"],
+                MainPageLocators.DROPDOWN_OPTION_DOLLARS["text"],
+            )
+        )
+
+        self.wait.until(EC.url_contains("id_currency=2"))
+
+        return self
