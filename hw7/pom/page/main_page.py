@@ -22,8 +22,8 @@ class MainPage(AbsBasePage):
         return self._is_element_visible(MainPageLocators.CAROUSEL_ELEMENT)
 
     @allure.step("Проверка видимости информации о пользователе")
-    def displayed_user_info(self):
-        return self._is_element_visible(MainPageLocators.USER_INFO_ELEMENT)
+    def displayed_user_info(self) -> bool:
+        return self.header.displayed_user_info()
 
     @allure.step("Проверка видимости блока 'Популярные товары'")
     def displayed_popular_title(self):

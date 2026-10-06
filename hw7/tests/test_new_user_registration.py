@@ -1,5 +1,6 @@
 import allure
 
+
 def test_new_user_reg(registration_page):
     with allure.step("Шаг 1: Выбор пола пользователя"):
         registration_page.click_gender_btn(1)
@@ -12,3 +13,6 @@ def test_new_user_reg(registration_page):
 
     with allure.step("Шаг 4: Отправка формы регистрации"):
         registration_page.click_save_btn()
+
+    with allure.step("Шаг 5: Проверка удачной регистрации пользователя"):
+        assert "Sign in" not in registration_page.check_user_info()

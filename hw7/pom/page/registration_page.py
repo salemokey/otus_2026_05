@@ -3,6 +3,7 @@ import logging
 import allure
 from selenium.webdriver.support import expected_conditions as EC
 
+from pom.components.header import HeaderComponent
 from pom.locators.registration_page_locators import RegistrationPageLocators
 from pom.page.abs_base_page import AbsBasePage
 
@@ -10,13 +11,12 @@ from pom.page.abs_base_page import AbsBasePage
 class RegistrationPage(AbsBasePage):
     def __init__(self, browser, base_url):
         super().__init__(browser, base_url, path="/registration")
+        self.header = HeaderComponent(browser, base_url, "")
         self.logger = logging.getLogger("RegistrationPage")
 
     @allure.step("Проверка видимости заголовка страницы регистрации")
     def displayed_title_registration_page(self):
-        return self._is_element_visible(
-            RegistrationPageLocators.TITLE_RERISTRATION_PAGE
-        )
+        return self._is_element_visible(RegistrationPageLocators.TITLE_RERISTRATION_PAGE)
 
     @allure.step("Получение текста заголовка страницы регистрации")
     def title_registration_page(self) -> str:
@@ -25,9 +25,7 @@ class RegistrationPage(AbsBasePage):
 
     @allure.step("Проверка наличия кнопок выбора пола")
     def displayed_gender_btn(self):
-        element = self.wait.until(
-            EC.presence_of_all_elements_located(RegistrationPageLocators.GENDER_BTN)
-        )
+        element = self.wait.until(EC.presence_of_all_elements_located(RegistrationPageLocators.GENDER_BTN))
         return len(element)
 
     @allure.step("Проверка видимости поля 'Имя'")
@@ -70,6 +68,10 @@ class RegistrationPage(AbsBasePage):
     def input_values(self):
         self._input_text("test", RegistrationPageLocators.FIRSTNAME)
         self._input_text("testering", RegistrationPageLocators.LASTNAME)
-        self._input_text("test@12312.com", RegistrationPageLocators.EMAIL)
-        self._input_text("NewPassword1232!", RegistrationPageLocators.PASSWORD)
+        self._input_text("test@123112qq2.com", RegistrationPageLocators.EMAIL)
+        self._input_text("NewPassword123211qweqw!", RegistrationPageLocators.PASSWORD)
         self._input_text("03/07/2007", RegistrationPageLocators.BIRTHDAY)
+
+    @allure.step("Проверка имени пользователя")
+    def check_user_info(self):
+        return self.header.check_user_info()

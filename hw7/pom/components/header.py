@@ -8,7 +8,7 @@ class HeaderComponent(AbsBasePage):
     def change_currency_to_usd(self):
         self.wait_visible(MainPageLocators.CURRENT_PRICE)
 
-        self.wait_visible((MainPageLocators.DROPDOWN_CURRENCY)).click()
+        self.wait_visible(MainPageLocators.DROPDOWN_CURRENCY).click()
 
         self._click(MainPageLocators.DROPDOWN_OPTION)
 
@@ -22,3 +22,9 @@ class HeaderComponent(AbsBasePage):
         self.wait.until(EC.url_contains("id_currency=2"))
 
         return self
+
+    def displayed_user_info(self):
+        return self._is_element_visible(MainPageLocators.USER_INFO_ELEMENT)
+
+    def check_user_info(self):
+        return self.wait_visible(MainPageLocators.USER_INFO_ELEMENT).text

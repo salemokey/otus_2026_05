@@ -1,4 +1,5 @@
 import logging
+
 import allure
 
 from pom.components.header import HeaderComponent
