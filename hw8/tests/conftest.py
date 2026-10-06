@@ -4,11 +4,8 @@ import pytest
 from pom.page.main_page import MainPage
 from pom.page.registration_page import RegistrationPage
 from selenium.webdriver.chrome.options import Options as ChromeOptions
-from selenium.webdriver.chrome.service import Service
-from selenium.webdriver.firefox.service import Service as FirefoxService
+from selenium.webdriver.common.service import Service
 from selenium.webdriver.remote.webdriver import WebDriver
-from webdriver_manager.chrome import ChromeDriverManager
-from webdriver_manager.firefox import GeckoDriverManager
 
 from selenium import webdriver
 
@@ -56,11 +53,19 @@ def browser(request) -> WebDriver:
             options.add_argument("--disable-dev-shm-usage")
             options.add_argument("--disable-gpu")
 
-        service: Service = Service(ChromeDriverManager().install())
-        driver = webdriver.Chrome(service=service)
+        options.binary_location = "/usr/bin/chromium"
+
+        service: Service = webdriver.ChromeService("/usr/bin/chromedriver")
+        driver = webdriver.Chrome(service=service, options=options)
     elif browser_name == "firefox":
-        service = FirefoxService(GeckoDriverManager().install())
-        driver = webdriver.Firefox(service=service)
+        options = webdriver.FirefoxOptions()
+        if headless:
+            options.add_argument("-headless")
+
+        options.binary_location = "/usr/bin/firefox-esr"
+
+        service: Service = webdriver.FirefoxService("/usr/bin/geckodriver")
+        driver = webdriver.Firefox(service=service, options=options)
 
     if not headless:
         driver.maximize_window()
