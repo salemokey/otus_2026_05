@@ -1,10 +1,10 @@
 import logging
+import os
 
 import pytest
 from pom.page.main_page import MainPage
 from pom.page.registration_page import RegistrationPage
 from selenium.webdriver.chrome.options import Options as ChromeOptions
-from selenium.webdriver.common.service import Service
 from selenium.webdriver.remote.webdriver import WebDriver
 
 from selenium import webdriver
@@ -12,11 +12,11 @@ from selenium import webdriver
 
 def pytest_addoption(parser):
     parser.addoption("--browser", default="firefox", help="Выбор браузера: chrome, firefox")
-    parser.addoption("--url", default="http://localhost:8081")
+    parser.addoption("--url", default="http://prestashop", help="Базовый URL приложения")
     parser.addoption(
         "--headless",
         action="store_true",
-        default=False,
+        default=True,
         help="Run browser in headless mode",
     )
 
@@ -45,6 +45,10 @@ def browser(request) -> WebDriver:
     browser_name: str = request.config.getoption("--browser")
     headless: bool = request.config.getoption("--headless", default=False)
 
+    remote_url = os.getenv("SELENOID_URL", "http://localhost:4444/wd/hub")
+
+    print(f"Connecting to Selenoid at: {remote_url}")
+
     if browser_name == "chrome":
         options = ChromeOptions()
         if headless:
@@ -53,19 +57,15 @@ def browser(request) -> WebDriver:
             options.add_argument("--disable-dev-shm-usage")
             options.add_argument("--disable-gpu")
 
-        options.binary_location = "/usr/bin/chromium"
-
-        service: Service = webdriver.ChromeService("/usr/bin/chromedriver")
-        driver = webdriver.Chrome(service=service, options=options)
     elif browser_name == "firefox":
         options = webdriver.FirefoxOptions()
         if headless:
             options.add_argument("-headless")
 
-        options.binary_location = "/usr/bin/firefox-esr"
+    else:
+        raise ValueError(f"Unsupported browser: {browser_name}")
 
-        service: Service = webdriver.FirefoxService("/usr/bin/geckodriver")
-        driver = webdriver.Firefox(service=service, options=options)
+    driver = webdriver.Remote(command_executor=remote_url, options=options)
 
     if not headless:
         driver.maximize_window()
@@ -77,7 +77,7 @@ def browser(request) -> WebDriver:
 
 @pytest.fixture
 def base_url(request) -> str:
-    return request.config.getoption("--url")
+    return os.getenv("BASE_URL") or request.config.getoption("--url")
 
 
 @pytest.fixture
