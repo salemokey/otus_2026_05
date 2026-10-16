@@ -128,7 +128,7 @@ services:
       - prestashop_network
 
   selenoid-ui:
-    image: aerokube/selenoid-ui:latest-release  # <--- ПРАВИЛЬНО: Всегда актуальная стабильная версия
+    image: aerokube/selenoid-ui:latest-release
     container_name: selenoid-ui
     depends_on:
       - selenoid
