@@ -12,11 +12,21 @@ from selenium import webdriver
 
 def pytest_addoption(parser):
     parser.addoption("--browser", default="firefox", help="Выбор браузера: chrome, firefox")
+    parser.addoption(
+        "--browser-version",
+        default="",
+        help="Версия браузера в Selenoid (пусто — версия по умолчанию)",
+    )
+    parser.addoption(
+        "--executor",
+        default=os.getenv("SELENOID_URL", "http://localhost:4444/wd/hub"),
+        help="Адрес Selenoid",
+    )
     parser.addoption("--url", default="http://prestashop", help="Базовый URL приложения")
     parser.addoption(
         "--headless",
         action="store_true",
-        default=True,
+        default=False,
         help="Run browser in headless mode",
     )
 
@@ -43,14 +53,19 @@ def init_logging():
 @pytest.fixture
 def browser(request) -> WebDriver:
     browser_name: str = request.config.getoption("--browser")
+    browser_version: str = request.config.getoption("--browser-version")
     headless: bool = request.config.getoption("--headless", default=False)
 
-    remote_url = os.getenv("SELENOID_URL", "http://localhost:4444/wd/hub")
+    remote_url = request.config.getoption("--executor")
 
     print(f"Connecting to Selenoid at: {remote_url}")
 
+    if browser_version:
+        print(f"Requested browser version: {browser_version}")
+
     if browser_name == "chrome":
         options = ChromeOptions()
+        options.set_capability("selenoid:options", {"enableVNC": True})
         if headless:
             options.add_argument("--headless=new")
             options.add_argument("--no-sandbox")
@@ -59,11 +74,15 @@ def browser(request) -> WebDriver:
 
     elif browser_name == "firefox":
         options = webdriver.FirefoxOptions()
+        options.set_capability("selenoid:options", {"enableVNC": True})
         if headless:
             options.add_argument("-headless")
 
     else:
         raise ValueError(f"Unsupported browser: {browser_name}")
+
+    if browser_version:
+        options.browser_version = browser_version
 
     driver = webdriver.Remote(command_executor=remote_url, options=options)
 
